@@ -1,4 +1,3 @@
-import { fstat } from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const express = require("express");
@@ -7,7 +6,6 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const port = process.env.PORT || 3000;
 const handle = app.getRequestHandler();
-const fs = require('fs');
 
 (async () => {
   await app.prepare();
