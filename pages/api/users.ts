@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 //const prisma = new PrismaClient();
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export const api = async (req: NextApiRequest, res: NextApiResponse) => {
     const {method} = req;
 
     switch(method) {
@@ -14,3 +14,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(405);
     }
 }
+
+export default api;
