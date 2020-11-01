@@ -1,11 +1,12 @@
+import { PrismaClient } from '@prisma/client';
+import { compare, hash } from 'bcryptjs';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { verify } from 'jsonwebtoken';
 import { createAccessToken, sendRefreshToken } from 'server/token';
 
-//const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 export const api = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { method } = req;
+    const {method} = req;
 
     switch (method) {
         case 'POST':
@@ -13,26 +14,32 @@ export const api = async (req: NextApiRequest, res: NextApiResponse) => {
         default:
             return res.status(405);
     }
-}
+};
 
 const loginUser = async (req: NextApiRequest, res: NextApiResponse) => {
-    //const { username, password } = req.body;
+    const {username, password} = req.body;
 
-    //const user = await getRepository(User).findOne({ where: { username } });
+    if (!username || !password) {
+        return res.status(400).send({message: 'username/password is required.'});
+    }
 
-    //if (!user) {
-    //return res.status(400).send({ message: 'Could not find user' });
-    //}
+    const user = await prisma.next_user.findFirst({where: {username}});
 
-    //const isValid = await compare(password, user.password);
+    if (!user) {
+        return res.status(400).send({message: 'Could not find user'});
+    }
 
-    //if (!isValid) {
-    //return res.status(400).send({ message: 'Invalid password' });
-    //}
+    console.log(await hash(password, 12));
 
-    sendRefreshToken("abtest", "0", res);
+    const isValid = await compare(password, user.password);
 
-    return res.send({ accessToken: createAccessToken("abtest", "abb") });
-}
+    if (!isValid) {
+        return res.status(400).send({message: 'Invalid password'});
+    }
+
+    sendRefreshToken(user.id, user.tokenVersion, res);
+
+    return res.send({accessToken: createAccessToken(user.id, user.username)});
+};
 
 export default api;

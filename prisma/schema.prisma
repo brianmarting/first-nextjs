@@ -7,8 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model nextjs_user {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+model next_user {
+  id            Int    @id @default(autoincrement())
+  username      String
+  password      String
+  tokenVersion String @map("token_version")
+  email         String
 }

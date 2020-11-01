@@ -8,7 +8,7 @@ const Test: React.FC<Props> = ({ users }) => {
   return <div>
       {users && users.map((user) => 
         <div>
-            <div>{user.name}</div>
+            <div>{user.username}</div>
         <div>{user.email}</div>
         </div>
       )}
@@ -16,8 +16,8 @@ const Test: React.FC<Props> = ({ users }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await fetch(`http://localhost:${process.env.PORT}/api/users`);
-  const users = await res.json();
+  const users = await fetch(`http://localhost:${process.env.PORT}/api/users`)
+      .then(res => res.json());
   return {
     props: { users },
   };

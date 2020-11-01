@@ -2,11 +2,13 @@ version: '3.1'
 
 services:
 
-  db:
-    image: postgres
-    restart: always
+  postgres:
+    image: postgres:13.0
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: nextjs-psql
     ports:
       - 5432:5432
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+    restart: always
