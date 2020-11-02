@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { verify } from 'jsonwebtoken';
 import { createAccessToken, sendRefreshToken } from 'server/token';
+import { PrismaClient } from '@prisma/client';
 
-//const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 export const api = async (req: NextApiRequest, res: NextApiResponse) => {
     const {method} = req;
@@ -22,7 +23,7 @@ const postRefreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(401).json({accessToken: ''});
     }
 
-    let payload;
+    let payload: any;
     try {
         payload = verify(token, process.env.REFRESH_TOKEN_SECRET!);
     } catch ({message}) {
@@ -30,21 +31,20 @@ const postRefreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(401).json({accessToken: ''});
     }
 
-    // valid token
-    //const user = await getRepository(User).findOne({externalId: payload.id});
+    //valid token
+    const user = await prisma.next_user.findFirst({where: {id: payload.id}});
 
-    //if (!user) {
-        //return sendInvalidAccessToken(res);
-    //}
+    if (!user) {
+        return res.status(401).json({accessToken: ''});
+    }
 
-    //if (user.tokenVersion !== payload.tokenVersion) {
-        //return sendInvalidAccessToken(res);
-    //}
+    if (user.tokenVersion !== payload.tokenVersion) {
+        return res.status(401).json({accessToken: ''});
+    }
 
-    sendRefreshToken("abtest", "0", res);
+    sendRefreshToken(user.id, user.tokenVersion, res);
 
-    return res.send({accessToken: createAccessToken("abtest", "abb")});
-
+    return res.send({accessToken: createAccessToken(user.id, user.username)});
 }
 
 export default api;

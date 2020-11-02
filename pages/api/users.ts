@@ -27,7 +27,7 @@ const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
             data: {
                 username,
                 password: hashedPassword,
-                tokenVersion: 0,
+                tokenVersion: '0',
                 email
             }
         });

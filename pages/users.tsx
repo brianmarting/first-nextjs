@@ -1,26 +1,29 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from 'next';
 
 type Props = {
-  users: any[];
+    users: any[];
 };
 
-const Test: React.FC<Props> = ({ users }) => {
-  return <div>
-      {users && users.map((user) => 
-        <div>
-            <div>{user.username}</div>
-        <div>{user.email}</div>
-        </div>
-      )}
+const Test: React.FC<Props> = ({users}) => {
+    return <div className='users'>
+        This is loaded per request, meaning it is SSR.
+        <br/>
+        {users && users.map((user) =>
+            <div key={user.username}>
+                <div>Username: {user.username}</div>
+                <div>Email: {user.email}</div>
+                <br/>
+            </div>
+        )}
     </div>;
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const users = await fetch(`http://localhost:${process.env.PORT}/api/users`)
-      .then(res => res.json());
-  return {
-    props: { users },
-  };
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+    const users = await fetch(`http://localhost:${process.env.PORT}/api/users`)
+        .then(res => res.json());
+    return {
+        props: {users}
+    };
 };
 
 export default Test;
