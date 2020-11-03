@@ -15,7 +15,13 @@ export const api = async (res, req) => {
 const getUserDetails = async (req: NextApiRequest, res: NextApiResponse) => {
     const {query: {id}} = req;
 
-    const user = await prisma.next_user.findOne({where: {id: +id}});
+    const user = await prisma.next_user.findOne({
+        where: {id: +id},
+        include: {
+            location: true
+        }
+    });
+    console.log(user);
 
     return res.send({...user});
 };

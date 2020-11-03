@@ -8,9 +8,21 @@ datasource db {
 }
 
 model next_user {
-  id            Int    @id @default(autoincrement())
-  username      String
-  password      String
-  tokenVersion String @map("token_version")
-  email         String
+  id           Int      @id @default(autoincrement())
+  username     String
+  password     String
+  tokenVersion String   @map("token_version")
+  email        String
+  location_id  Int      @default(autoincrement())
+  location     location @relation(fields: [location_id], references: [id])
+}
+
+model location {
+  id            Int         @id @default(autoincrement())
+  street        String
+  streetNumber  String @map("street_number")
+  postalCode    String @map("postal_code")
+  town          String
+  country       String
+  next_user     next_user[]
 }
