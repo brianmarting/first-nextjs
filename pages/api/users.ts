@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from 'database/client';
 
-const prisma = new PrismaClient();
-
-export const api = async (req: NextApiRequest, res: NextApiResponse) => {
+export const api = async (res: NextApiResponse, req) => {
     const {method} = req;
 
     switch (method) {

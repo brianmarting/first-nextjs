@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS next_user (
   email VARCHAR NOT NULL
 );
 
-INSERT INTO next_user VALUES ("nextuser", "nothing", "0", "next@gmail.com");
+INSERT INTO next_user (username,password,token_version,email) VALUES ('nextuser','nothing', '0', 'next@gmail.com');
